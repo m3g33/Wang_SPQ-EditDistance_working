@@ -1,12 +1,15 @@
 #!/usr/bin/python
-import sys, subprocess
+import sys, subprocess, os
+from __future__ import print_function
 
-party = {'gen': "java -cp FlexSC/lib/*:bin/ util.GenRunnable",
-         'eva':"java -cp FlexSC/lib/*:bin/ util.EvaRunnable"}
+delim = ";" if os.name == "nt" else ":"
+
+party = {'gen': "java -cp FlexSC/lib/*" + delim + "bin/ util.GenRunnable",
+         'eva': "java -cp FlexSC/lib/*" + delim + "bin/ util.EvaRunnable"}
 program = {'ptcl1': "Protocol1 ",
-           'ptcl2':"Protocol2 "}
+           'ptcl2': "Protocol2 "}
 
 cmd = party[sys.argv[1]]+" online."+program[sys.argv[2]]+" ".join(sys.argv[3:])
-print "Command to run", cmd
+print("Command to run:", cmd)
 
 subprocess.call(cmd, shell=True)
