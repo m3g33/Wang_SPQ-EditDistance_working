@@ -27,6 +27,8 @@ Link to the paper: http://www.cs.umd.edu/~wangxiao/papers/ped.pdf
 
 `./compile.sh`
 
+`mkdir processed`
+
 `java -cp bin/ offline.DataPreprocessor listOfGenome processed/`
 
 **If you run into _class not found_ errors, e.g. use an IDE. In IntelliJ:**
