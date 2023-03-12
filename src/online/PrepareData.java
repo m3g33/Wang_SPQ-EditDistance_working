@@ -79,7 +79,7 @@ public class PrepareData {
 	public static void main(String[] args) {
 		//		double res1 = setDiff(args[0], args[1]);
 		//		System.out.println(res1);
-		double res2 = setDiffApprox(args[0], args[1], new Integer(args[2]), new Integer(args[3]));
+		double res2 = setDiffApprox(args[0], args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
 		//		System.out.println(res2);
 		//		System.out.println((res1-res2)/res1);
 	}

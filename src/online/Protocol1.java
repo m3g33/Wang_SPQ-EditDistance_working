@@ -212,7 +212,7 @@ public class Protocol1 {
 			File file = new File(filename);
 			scanner = new Scanner(file);
 			String a = scanner.nextLine();
-			int lines = new Integer(a);
+			int lines = Integer.parseInt(a);
 			for(int i = 0; i < lines; ++i) {
 				String tmp = scanner.nextLine();
 				list.add(tmp.trim());
