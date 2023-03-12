@@ -53,9 +53,12 @@ public class Protocol1 {
 		SketchForProtocol1[] sketch;
 		int numberOfFile;
 		ArrayList<String> list;
+		// time for different methods
 		double t1;
 		
 		public int SIZE, MEDIAN, bitL;
+
+		// This method creates the sketches and performs oblivious transfer to receive the sketches from the Evaluator
 		@Override
 		public void prepareInput(CompEnv<T> gen) throws Exception {
 			SIZE = config.getInt("m");
@@ -102,8 +105,10 @@ public class Protocol1 {
 			t1 = System.currentTimeMillis()/1000.0;
 		}
 
+		// This method computes the "encrypted" median Z for all patients
 		@Override
 		public void secureCompute(CompEnv<T> gen) throws Exception {
+			// res is array including median Z for each patient
 			res = gen.newTArray(numberOfFile, 0);
 			T[][] med = gen.newTArray(MEDIAN, 0);
 			boolean[][] data = new boolean[SIZE][bitL];
@@ -119,11 +124,12 @@ public class Protocol1 {
 				lib.sort(med, gen.ZERO());
 				res[listindex] = med[MEDIAN/2];
 
-				System.out.println("Time for paitent "+(1+listindex)+": "+(System.currentTimeMillis()/1000.0-t1));
+				System.out.println("Time for patient "+(1+listindex)+": "+(System.currentTimeMillis()/1000.0-t1));
 				t1 = System.currentTimeMillis()/1000.0;
 			}
 		}
 
+		// This method prints the "decrypted" median per patient
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {	
 			String f = new String(gen.channel.readBytes());

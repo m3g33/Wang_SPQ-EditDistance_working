@@ -52,9 +52,12 @@ public class Protocol2 {
 		SketchForProtocol2[] sketch;
 		int numberOfFile;
 		ArrayList<String> list;
+		// time for different methods
 		double t1;
 		
 		public int SIZE, MEDIAN, bitL;
+
+		// This method creates the sketches and performs oblivious transfer to receive the sketches from the Evaluator
 		@Override
 		public void prepareInput(CompEnv<T> gen) throws Exception {
 			SIZE = config.getInt("m");
@@ -72,7 +75,7 @@ public class Protocol2 {
 			gen.channel.writeInt(numberOfFile);
 			for(int i = 0; i < sketch[0].sks.length; ++i)
 				for(int j = 0; j < sketch[0].sks[0].length; ++j)
-				gen.channel.writeLong(sketch[0].sks[i][j]);
+					gen.channel.writeLong(sketch[0].sks[i][j]);
 			gen.channel.flush();
 
 	        executor = Executors.newFixedThreadPool(config.getInt("NumThreads"));
@@ -96,35 +99,41 @@ public class Protocol2 {
 			boolean[][] data1 = new boolean[SIZE][bitL];
 			bobBF = gen.newTArray(MEDIAN, SIZE, 0);
 			for(int i = 0; i < MEDIAN; ++i) {
-				bobBF[i] =  gen.inputOfBob(data1);
+				bobBF[i] = gen.inputOfBob(data1);
 				gen.channel.flush();
 			}
 			System.out.println("Time to do OT: "+(System.currentTimeMillis()/1000.0-t1));
 			t1 = System.currentTimeMillis()/1000.0;
 		}
 
+		// This method computes the "encrypted" median Z for all patients
 		@Override
 		public void secureCompute(CompEnv<T> gen) throws Exception {
+			// res array contains median Z for all files/patients
 			res = gen.newTArray(numberOfFile, 0);
+			// med is array containing means ^D_1, ..., ^D_k
 			T[][] med = gen.newTArray(MEDIAN, 0);
 			boolean[][] data = new boolean[SIZE][bitL];
 			for(int listindex = 0; listindex < numberOfFile; listindex++) {
 				BitonicSortLib<T> lib = new BitonicSortLib<T>(gen);
 				for(int i = 0; i < MEDIAN; ++i) {
+					// sketch[listindex].bs[i].length = m (e.g. 2048)
 					for(int j = 0; j < sketch[listindex].bs[i].length; ++j)
 						data[j] = Utils.fromInt(sketch[listindex].bs[i][j], bitL);
 					aliceBF = gen.inputOfAlice(data);
 					med[i] = compute(gen, aliceBF, bobBF[i]);
 				}
 
+				// sort med array and save median (step: 2.)
 				lib.sort(med, gen.ZERO());
 				res[listindex] = med[MEDIAN/2];
 
-				System.out.println("Time for paitent "+(1+listindex)+": "+(System.currentTimeMillis()/1000.0-t1));
+				System.out.println("Time for patient "+(1+listindex)+": "+(System.currentTimeMillis()/1000.0-t1));
 				t1 = System.currentTimeMillis()/1000.0;
 			}
 		}
 
+		// This method prints the "decrypted" median per patient
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
 			String f = new String(gen.channel.readBytes());
@@ -162,7 +171,7 @@ public class Protocol2 {
 			numberOfFile = gen.channel.readInt();
 			for(int i = 0; i < sketch.sks.length; ++i)
 				for(int j = 0; j < sketch.sks[0].length; ++j)
-				sketch.sks[i][j] = gen.channel.readLong();
+					sketch.sks[i][j] = gen.channel.readLong();
 
 			PrepareData.readFile(config.getString("EvaFile"), sketch);
 			sketch.finalizeSketch();

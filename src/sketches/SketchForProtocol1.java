@@ -10,9 +10,12 @@ public class SketchForProtocol1 {
 	SecureRandom rnd = new SecureRandom();
 	
 	public SketchForProtocol1(int m, int l) {
+		// l (m) is \ell in the paper, i.e., bucket size
 		this.l = m;
+		// k (l) is k in the paper ("For j from 1 to k")
 		this.k = l;
 		bs  = new int[l][m];
+		// sks is the seed for murmurhash
 		sks = new long[l];
 		for(int i = 0; i < sks.length ; ++i)
 			sks[i] = rnd.nextInt();
