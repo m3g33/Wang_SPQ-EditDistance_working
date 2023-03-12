@@ -15,4 +15,4 @@ hs_err_pid*
 *.project
 *NPOTKey
 *bin/
-# *processed/
+*processed/
