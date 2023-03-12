@@ -1,6 +1,6 @@
 #!/usr/bin/python
-import sys, subprocess, os
 from __future__ import print_function
+import sys, subprocess, os
 
 delim = ";" if os.name == "nt" else ":"
 
